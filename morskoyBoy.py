@@ -1,32 +1,32 @@
 from random import randint
 
-class Dot:
-    def __init__(self, x, y):
+class Dot:                      # отвечает за ввод координат x и y
+    def __init__(self, x, y):   
         self.x = x
         self.y = y
     
-    def __eq__(self, other):
+    def __eq__(self, other):    # нужен для сравнения коррдинат
         return self.x == other.x and self.y == other.y
     
-    def __repr__(self):
+    def __repr__(self):         # вывод координат
         return f"({self.x}, {self.y})"
 
 
-class BoardException(Exception):
+class BoardException(Exception): # исключения       
     pass
 
-class BoardOutException(BoardException):
+class BoardOutException(BoardException): #исключение будет использоваться, если введут координаты за пределами нашей области игры
     def __str__(self):
         return "Вы пытаетесь выстрелить за доску!"
 
-class BoardUsedException(BoardException):
+class BoardUsedException(BoardException):   # исключение будет использоваться, если вводимая координата уже использовалась
     def __str__(self):
         return "Вы уже стреляли в эту клетку"
 
 class BoardWrongShipException(BoardException):
     pass
 
-class Ship:
+class Ship:                                 # класс "Корабль". Задаём координаты корабля через bow (=Dot), длину корабля (l), направления по гор или вертикали (o)
     def __init__(self, bow, l, o):
         self.bow = bow
         self.l = l
@@ -35,25 +35,25 @@ class Ship:
     
     @property
     def dots(self):
-        ship_dots = []
+        ship_dots = []              #определяет координаты корабля, в зависимости от его длины
         for i in range(self.l):
             cur_x = self.bow.x 
             cur_y = self.bow.y
             
-            if self.o == 0:
+            if self.o == 0:        #если o будет 0 то корабль будет горизонтальным
                 cur_x += i
             
-            elif self.o == 1:
+            elif self.o == 1:       #если o будет 1 то корабль будет вертикальным
                 cur_y += i
             
-            ship_dots.append(Dot(cur_x, cur_y))
+            ship_dots.append(Dot(cur_x, cur_y)) # обавляем в список наши координаты
         
         return ship_dots
     
-    def shooten(self, shot):
+    def shooten(self, shot):        # проверка выстрела в наши координаты корабля
         return shot in self.dots
 
-class Board:
+class Board:            #определение размера площадки
     def __init__(self, hid = False, size = 6):
         self.size = size
         self.hid = hid
@@ -65,7 +65,7 @@ class Board:
         self.busy = []
         self.ships = []
     
-    def add_ship(self, ship):
+    def add_ship(self, ship): #добавление нового корабля
         
         for d in ship.dots:
             if self.out(d) or d in self.busy:
